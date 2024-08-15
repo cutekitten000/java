@@ -1,34 +1,33 @@
 public class ResourceManager {
     private List<Server> serverList;
     private List<Task> taskQueue;
-    
-    
+
     public ResourceManager() {
         this.serverList = new ArrayList<>();
         this.taskQueue = new ArrayList<>();
     }
-    
-    // add server
+
+    // Add Server
     public void addServer(Server server) {
         serverList.add(server);
     }
-    
-    // remove server
+
+    // Remove Server
     public void removeServer(Server server) {
         serverList.remove(server);
     }
-    
+
     // Allocate Task
     public void allocateTask(Task task) {
         Server bestServer = null;
-        
+
         for (Server server : serverList) {
             if (server.addTask(task)) {
                 bestServer = server;
                 break;
             }
         }
-        
+
         if (bestServer == null) {
             taskQueue.add(task);
             System.out.println("Task " + task.getTaskId() + " is queued due to insufficient resources.");
@@ -36,25 +35,25 @@ public class ResourceManager {
             System.out.println("Task " + task.getTaskId() + " allocated to Server " + bestServer.getServerId());
         }
     }
-    
+
     // Rebalance Servers
     public void rebalanceServers() {
         for (Server server : serverList) {
             List<Task> tasksToReallocate = new ArrayList<>();
-            
+
             for (Task task : server.getTaskList()) {
-                if(!server.addTask(task)) {
+                if (!server.addTask(task)) {
                     tasksToReallocate.add(task);
                     server.removeTask(task);
                 }
             }
-            
+
             for (Task task : tasksToReallocate) {
                 allocateTask(task);
             }
         }
     }
-    
+
     // Generate Reports
     public void generateReports() {
         for (Server server : serverList) {
