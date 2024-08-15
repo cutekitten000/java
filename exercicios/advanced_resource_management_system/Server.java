@@ -7,7 +7,7 @@ public class Server {
     private int allocatedMemory;
     private int allocatedStorage;
     private List<Task> taskList;
-    
+
     public Server(int serverId, int totalCpu, int totalMemory, int totalStorage) {
         this.serverId = serverId;
         this.totalCpu = totalCpu;
@@ -18,8 +18,8 @@ public class Server {
         this.allocatedStorage = 0;
         this.taskList = new ArrayList<>();
     }
-    
-    // Add task
+
+    // Add Task
     public boolean addTask(Task task) {
         if (canAllocate(task)) {
             taskList.add(task);
@@ -31,8 +31,8 @@ public class Server {
         }
         return false;
     }
-    
-    // remove task
+
+    // Remove Task
     public void removeTask(Task task) {
         if (taskList.remove(task)) {
             allocatedCpu -= task.getCpuRequirement();
@@ -41,40 +41,44 @@ public class Server {
             task.setStatus("Stopped");
         }
     }
-    
-    // check if resources are avaliable
+
+    // Check if resources are available
     private boolean canAllocate(Task task) {
-        return allocatedCpu + task.getCpuRequirement() <= totalCpu && allocatedMemory + task.getMemoryRequirement() <= totalMemory && allocatedStorage + task.getStorageRequirement() <= totalStorage;
+        return allocatedCpu + task.getCpuRequirement() <= totalCpu &&
+               allocatedMemory + task.getMemoryRequirement() <= totalMemory &&
+               allocatedStorage + task.getStorageRequirement() <= totalStorage;
     }
-    
+
+    // Getters
+
     public int getServerId() {
         return serverId;
     }
-    
+
     public int getTotalCpu() {
         return totalCpu;
     }
-    
+
     public int getTotalMemory() {
         return totalMemory;
     }
-    
+
     public int getTotalStorage() {
         return totalStorage;
     }
-    
+
     public int getAllocatedCpu() {
         return allocatedCpu;
     }
-    
+
     public int getAllocatedMemory() {
         return allocatedMemory;
     }
-    
+
     public int getAllocatedStorage() {
         return allocatedStorage;
     }
-    
+
     public List<Task> getTaskList() {
         return taskList;
     }
