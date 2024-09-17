@@ -1,37 +1,50 @@
 package application;
 
-import model.entities.Contract;
-import model.services.ContractService;
-import model.services.OnlinePaymentService;
-import model.services.PaypalService;
-
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
+import entities.Contract;
+import entities.Installment;
+import services.ContractService;
+import services.PaypalService;
+
 public class Main {
-    public static void main(String[] args) {
-        Locale.setDefault(Locale.US);
-        Scanner sc = new Scanner(System.in);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        System.out.println("Entre com os dados do contrato:");
-        System.out.print("Numero: ");
-        int number = sc.nextInt();
-        sc.nextLine();
-        System.out.print("Data (dd/MM/yyyy): ");
-        LocalDate date = LocalDate.parse(sc.nextLine(), fmt);
-        System.out.print("Valor do contrato: ");
-        double amount = sc.nextDouble();
-        System.out.print("Entre com o numero de parcelas: ");
-        int installment = sc.nextInt();
+	public static void main(String[] args) throws ParseException {
 
-        Contract contract = new Contract(number, date, amount);
-
-        ContractService contractService = new ContractService();
-        contractService.processContract(contract, installment);
-
-        sc.close();
-    }
+		Locale.setDefault(Locale.US);
+		Scanner sc = new Scanner(System.in);
+		
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		System.out.println("Entre os dados do contrato:");
+		System.out.print("Numero: ");
+		int number = sc.nextInt();
+		System.out.print("Data (dd/MM/yyyy): ");
+		LocalDate date = LocalDate.parse(sc.next(), fmt);
+		System.out.print("Valor do contrato: ");
+		double totalValue = sc.nextDouble();
+		
+		Contract obj = new Contract(number, date, totalValue);
+		
+		System.out.print("Entre com o numero de parcelas: ");
+		int n = sc.nextInt();
+		
+		ContractService contractService = new ContractService(new PaypalService());
+		
+		contractService.processContract(obj, n);
+		
+		System.out.println("Parcelas:");
+		for (Installment installment : obj.getInstallments()) {
+			System.out.println(installment);
+		}
+		
+		sc.close();
+	}
 }
